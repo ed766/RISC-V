@@ -23,7 +23,7 @@ module ALU(
     CLA_64bit cla_inst(
         .A(A),
         .B(B),
-        .Cin(Cin), // Assuming add with no carry-in
+        .Cin(Cin), 
         .Result(Add_result),
         .Cout(Cout_add),
         .Overflow(Overflow_add)
@@ -33,12 +33,12 @@ module ALU(
     Subtractor_64bit Sub_inst(
         .A(A),
         .B(B),
-        .Cin(1'b0), // Assuming subtract with borrow-in
+        .Cin(1'b0), // Subtractor uses 2's complement, so Cin is always 0
         .Result(Sub_result),
         .Cout(Cout_sub),
         .Overflow(Overflow_sub)
     );
-
+    
     assign Add_selected = (ALUCtrl == 4'b0010); // ADD operation
     assign Sub_selected = (ALUCtrl == 4'b0110); // SUB operation
     

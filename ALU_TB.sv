@@ -12,7 +12,9 @@ module ALU_TB();
     reg [6:0] Func7;
     reg signed [63:0] A_gold, B_gold, Result_gold;
     reg Cin;
-
+    reg [31:0] reg1;
+    reg [31:0] reg2;
+    reg [31:0] temp_random0, temp_random1;
     // Outputs
     wire signed [63:0] Result;
     wire Zero;
@@ -20,7 +22,9 @@ module ALU_TB();
     wire Overflow;
     // Intermediate wires for connecting ALU_Control to ALU
     wire [3:0] ALUCtrl;
-
+    integer i;
+    integer passed;
+    integer total;
     // Instantiate the ALU_Control Module
     ALU_Control uut_control(
         .ALUOp(ALUOp),
@@ -28,6 +32,8 @@ module ALU_TB();
         .Func7(Func7),
         .ALUCtrl(ALUCtrl)
     );
+
+
 
     // Instantiate the ALU Module
     ALU uut_alu(
@@ -55,6 +61,10 @@ module ALU_TB();
         Func3 = 0;
         Func7 = 0;
         Cin = 0;
+        passed = 0;
+        total = 0;
+
+    // Now reg1 and reg2 have the same random value
         #10;
         // Test Cases for ADD 
         //ADD1: basic addition
@@ -84,6 +94,18 @@ module ALU_TB();
         Cin = 1;
         Result_gold = A_gold + B_gold + Cin;
         #10;
+        for(i=0;i<100;i=i+1) begin //Loop to run throgugh 100 random test cases
+            // Generate a random value
+            temp_random0 = $random;
+            temp_random1 = $random;
+            // Assign it to both regs
+            A = temp_random0;
+            A_gold = temp_random0;
+            B = temp_random1;
+            B_gold = temp_random1;
+            Result_gold = A_gold + B_gold + Cin;
+            #10;
+        end
         // Test Cases SUB
         //SUB1: basic subtraction
         A = 50;
@@ -101,7 +123,18 @@ module ALU_TB();
         B_gold = 64'd1;
         Result_gold = A_gold - B_gold;
         #10;
-        
+        for(i=0;i<100;i=i+1) begin //Loop to run throgugh 100 random test cases
+        // Generate a random value
+        temp_random0 = $random;
+        temp_random1 = $random;
+        // Assign it to both regs
+        A = temp_random0;
+        A_gold = temp_random0;
+        B = temp_random1;
+        B_gold = temp_random1;
+        Result_gold = A_gold - B_gold;
+        #10;
+        end
         // Test Case 3: MUL
         A = 3;
         B = 4;
@@ -161,7 +194,9 @@ module ALU_TB();
             end 
         else begin
             $display("Test Passed: A = %d, B = %d, Result_gold = %d, Result = %d", A, B, Result_gold, Result);
+            passed = passed + 1;
             end
+        total = total + 1; // Increment total number of tests 
         end
     end
 endmodule
