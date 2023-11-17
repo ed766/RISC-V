@@ -10,11 +10,11 @@ module ALU_TB();
     reg [6:0] ALUOp;
     reg [2:0] Func3;
     reg [6:0] Func7;
-    reg signed [63:0] A_gold, B_gold;
+    reg signed [63:0] A_gold, B_gold, Result_gold;
     reg Cin;
 
     // Outputs
-    wire signed [63:0] Result, Result_gold;
+    wire signed [63:0] Result;
     wire Zero;
     wire Cout;
     wire Overflow;
@@ -33,29 +33,12 @@ module ALU_TB();
     ALU uut_alu(
         .A(A),
         .B(B),
+        .Cin(Cin),
         .ALUCtrl(ALUCtrl),
         .Result(Result),
-        .Zero(Zero)
+        .Zero(Zero),
+        .Overflow(Overflow)
     );
-
-    //Instantiate the CLA Module
-    CLA_64bit uut_cla(
-        .A(A),
-        .B(B),
-        .Cin(Cin),
-        .Sum(Result),
-        .Cout(Cout)
-    );
-
-    //Instantiate the Subtractor Module
-    Subtractor_64bit uut_sub(
-        .A(A),
-        .B(B),
-        .Cin(Cin),
-        .Sum(Result),
-        .Cout(Cout)
-    );
-
     // Clock generation
     initial Clk = 0;
     always #5 Clk = ~Clk; // Toggle clock every 5ns
@@ -67,11 +50,12 @@ module ALU_TB();
         B = 0;
         A_gold = 0;
         B_gold = 0;
+        Result_gold = 0;
         ALUOp = 0;
         Func3 = 0;
         Func7 = 0;
         Cin = 0;
-
+        #10;
         // Test Cases for ADD 
         //ADD1: basic addition
         A = 20;
@@ -90,13 +74,16 @@ module ALU_TB();
         A_gold = 10;
         B_gold = 10;
         Cin = 1;
+        Result_gold = A_gold + B_gold + Cin;
+        #10;
         //ADD3: Overflow check
         A = 64'd1;
         B = 64'd1;
         A_gold = 64'd1;
         B_gold = 64'd1;
         Cin = 1;
-
+        Result_gold = A_gold + B_gold + Cin;
+        #10;
         // Test Cases SUB
         //SUB1: basic subtraction
         A = 50;
@@ -104,7 +91,7 @@ module ALU_TB();
         A_gold = 50;
         B_gold = 20;
         Result_gold = A_gold - B_gold;
-        Func3 = 3'b000;
+        Func3 = 3'b000; // SUB
         Func7 = 7'b0100000; // SUB_OP
         #10; // Wait for 10 ns
         //SUB2: Overflow check
@@ -113,7 +100,8 @@ module ALU_TB();
         A_gold = 64'd0;
         B_gold = 64'd1;
         Result_gold = A_gold - B_gold;
-
+        #10;
+        
         // Test Case 3: MUL
         A = 3;
         B = 4;
@@ -168,7 +156,7 @@ module ALU_TB();
             $display("WARNING!!! Overflow occured");
         end
         else begin
-        if (Result != Result_gold) begin
+        if (Result !== Result_gold) begin
             $display("Mismatch: A = %d, B = %d, Expected = %d, Got = %d", A, B, Result_gold, Result);
             end 
         else begin

@@ -1,11 +1,12 @@
 module Subtractor_64bit(
     input signed [63:0] A,
     input signed [63:0] B,
+    input Cin,
     output signed [63:0] Result,
-    output Overflow
+    output Overflow,
+    output Cout
 );
     wire signed [63:0] Twos_complement_B;
-    wire Carry_out; // Carry out of the addition
 
     // Calculate two's complement of B
     assign Twos_complement_B = ~B + 1;
@@ -15,8 +16,9 @@ module Subtractor_64bit(
         .A(A),
         .B(Twos_complement_B),
         .Cin(1'b0),  // As we already added 1 in the two's complement
-        .Sum(Result),
-        .Cout(Carry_out)
+        .Result(Result),
+        .Cout(Cout),
+        .Overflow(Overflow)
     );
 
     // Overflow logic
