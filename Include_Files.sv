@@ -2,3 +2,5 @@
 `include "ALU_Control.sv"
 `include "CLA_64bit.sv"
 `include "Subtractor_64bit.sv"
+`include "Dadda_Multiplier.sv"
+`include "abs.sv"

@@ -124,17 +124,18 @@ module ALU_TB();
         Result_gold = A_gold - B_gold;
         #10;
         for(i=0;i<100;i=i+1) begin //Loop to run throgugh 100 random test cases
-        // Generate a random value
-        temp_random0 = $random;
-        temp_random1 = $random;
-        // Assign it to both regs
-        A = temp_random0;
-        A_gold = temp_random0;
-        B = temp_random1;
-        B_gold = temp_random1;
-        Result_gold = A_gold - B_gold;
-        #10;
+            // Generate a random value
+            temp_random0 = $random;
+            temp_random1 = $random;
+            // Assign it to both regs
+            A = temp_random0;
+            A_gold = temp_random0;
+            B = temp_random1;
+            B_gold = temp_random1;
+            Result_gold = A_gold - B_gold;
+            #10;
         end
+
         // Test Case 3: MUL
         A = 3;
         B = 4;
@@ -191,11 +192,11 @@ module ALU_TB();
         else begin
         if (Result !== Result_gold) begin
             $display("Mismatch: A = %d, B = %d, Expected = %d, Got = %d", A, B, Result_gold, Result);
-            end 
+        end 
         else begin
             $display("Test Passed: A = %d, B = %d, Result_gold = %d, Result = %d", A, B, Result_gold, Result);
             passed = passed + 1;
-            end
+        end
         total = total + 1; // Increment total number of tests 
         end
     end

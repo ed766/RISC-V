@@ -6,7 +6,7 @@ module ALU(
     input signed  [63:0] B, // Second operand
     input  Cin, // Carry-in
     input  [3:0] ALUCtrl, // ALU control signals, see ALU_Control.v
-    output reg signed  [63:0] Result, // Result of the operation
+    output reg signed  [127:0] Result, // Result of the operation
     output reg Zero, // Flag to indicate if the result is zero
     output reg Overflow // Flag to indicate if the result overflows
 );
@@ -14,6 +14,7 @@ module ALU(
     // Intermediate signals to hold results from the CLA and Subtractor
     wire signed [63:0] Add_result;
     wire signed [63:0] Sub_result;
+    wire signed [127:0] Multiply_Result
     wire Cout_add, Cout_sub, Overflow_add, Overflow_sub;
 
     // Flag signals indicating which operation is currently selected
@@ -38,10 +39,15 @@ module ALU(
         .Cout(Cout_sub),
         .Overflow(Overflow_sub)
     );
-    
+    //Instantiate the Dadda Multiplier module
+    module Dadda_Multiplier (
+   .multiplicand(A), //A
+   .multiplier(B), //B
+   .product(Multiply_Result) //Result
+);
     assign Add_selected = (ALUCtrl == 4'b0010); // ADD operation
     assign Sub_selected = (ALUCtrl == 4'b0110); // SUB operation
-    
+    assign Multiply_selected = (ALUCtrl == 4'b0011); // Multiply operation
     always @(*) begin
         case(ALUCtrl)
             4'b0010: begin // ADD, see CLA_64bit.sv
@@ -52,18 +58,18 @@ module ALU(
                 Result = Sub_result;
                 Overflow = Overflow_sub; // Assign overflow from the subtractor
             end
-            4'b0011: Result = A * B; // MUL
+            4'b0011: Result = Multiply_Result; // See Dadda_Multiplier.sv
             4'b0001: Result = A / B; // DIV (ensure B is not zero)
             4'b0111: Result = (A < B) ? 1 : 0; // SLT (Set on Less Than)
             4'b0000: Result = A & B; // AND
             default: begin
-                Result = 64'b0; // Default case
+                Result = 127'b0; // Default case
                 Overflow = 1'b0; // No Overflow by default 
             end
         endcase
 
         // Set Zero flag
-        Zero = (Result == 64'b0) ? 1'b1 : 1'b0;
+        Zero = (Result == 127'b0) ? 1'b1 : 1'b0;
     end
 
 endmodule
