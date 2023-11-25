@@ -4,3 +4,5 @@
 `include "Subtractor_64bit.sv"
 `include "Dadda_Multiplier.sv"
 `include "abs.sv"
+`include "Full_Adder.sv"
+`include "Half_Adder.sv"

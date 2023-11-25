@@ -6,6 +6,8 @@ module Full_Adder(
     output Result,
     output Cout
 );
+always @(A,B,Cin) begin
     Result = A ^ B ^ Cin;
     Cout = (A && B) || (Cin && A) || (Cin && A);
+end
 endmodule

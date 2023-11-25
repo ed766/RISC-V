@@ -5,7 +5,8 @@ module Half_Adder(
     output Result,
     output Cout
 );
+always @(A,B) begin
     Result = A ^ B;
     Cout = A && B;
-
+end
 endmodule

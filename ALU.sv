@@ -14,7 +14,7 @@ module ALU(
     // Intermediate signals to hold results from the CLA and Subtractor
     wire signed [63:0] Add_result;
     wire signed [63:0] Sub_result;
-    wire signed [127:0] Multiply_Result
+    wire signed [127:0] Multiply_Result;
     wire Cout_add, Cout_sub, Overflow_add, Overflow_sub;
 
     // Flag signals indicating which operation is currently selected
@@ -40,7 +40,7 @@ module ALU(
         .Overflow(Overflow_sub)
     );
     //Instantiate the Dadda Multiplier module
-    module Dadda_Multiplier (
+    Dadda_Multiplier Mutli_inst (
    .multiplicand(A), //A
    .multiplier(B), //B
    .product(Multiply_Result) //Result

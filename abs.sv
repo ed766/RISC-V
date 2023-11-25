@@ -1,3 +1,4 @@
+//Absolute value function
 function [31:0] abs;
     input [31:0] data;
     begin
