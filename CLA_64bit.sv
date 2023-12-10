@@ -8,7 +8,7 @@ module CLA_64bit(
     output Cout,
     output Overflow
 );
-    wire [16:0] Carry;
+    wire [15:0] Carry;
 
     // Instantiate the first block with external Carry-in
         CLA_4bit block0(
@@ -35,7 +35,7 @@ module CLA_64bit(
 
 
     // The final Carry-out
-    assign Cout = Carry[16];
+    assign Cout = Carry[15];
 
     //Overflow assignment 
     assign Overflow = ((A[63] == B[63]) && (Result[63] != A[63]));

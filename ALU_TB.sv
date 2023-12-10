@@ -1,6 +1,5 @@
 //Testbench for ALU.sv, ALU_Control.sv, ALU operations
 `timescale 1ns / 1ps
-`include "Include_Files.sv"
 module ALU_TB();
 
     // Clock signal for synchronous operations
@@ -14,7 +13,7 @@ module ALU_TB();
     reg Cin;
     reg [31:0] reg1;
     reg [31:0] reg2;
-    reg [31:0] temp_random0, temp_random1;
+    reg [63:0] temp_random0, temp_random1;
     // Outputs
     wire signed [63:0] Result;
     wire Zero;
@@ -23,8 +22,8 @@ module ALU_TB();
     // Intermediate wires for connecting ALU_Control to ALU
     wire [3:0] ALUCtrl;
     integer i;
-    integer passed;
-    integer total;
+    integer passed=0;
+    integer total=0;
     // Instantiate the ALU_Control Module
     ALU_Control uut_control(
         .ALUOp(ALUOp),
@@ -145,7 +144,24 @@ module ALU_TB();
         Func3 = 3'b000; // MUL
         Func7 = 7'b0000001; // MUL_OP
         #10; // Wait for 10 ns
-
+        A = 1;
+        B = 2;
+        A_gold = 1;
+        B_gold = 2;
+        Result_gold = A_gold * B_gold;
+        #10;
+        for(i=0;i<100;i=i+1) begin //Loop to run throgugh 100 random test cases
+            // Generate a random value
+            temp_random0 = $random;
+            temp_random1 = $random;
+            // Assign it to both regs
+            A = temp_random0;
+            A_gold = temp_random0;
+            B = temp_random1;
+            B_gold = temp_random1;
+            Result_gold = A_gold * B_gold;
+            #10;
+        end
         // Test Case 4: DIV
         A = 40;
         B = 5;
@@ -181,6 +197,7 @@ module ALU_TB();
         #10; 
         // End of test cases
         // Finish Simulation
+        $display("Passed %d/%d tests", passed, total); //Display totals for tests
         $finish;
     end
 

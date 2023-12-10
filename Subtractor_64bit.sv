@@ -3,7 +3,6 @@ module Subtractor_64bit(
     input signed [63:0] B,
     input Cin,
     output signed [63:0] Result,
-    output Overflow,
     output Cout
 );
     wire signed [63:0] Twos_complement_B;
